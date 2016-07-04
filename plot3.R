@@ -1,11 +1,14 @@
+# download data
 fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
 if(!file.exists('data')) dir.create('data')
 download.file(fileUrl, destfile = './data/powerdata.zip')
 unzip('./data/powerdata.zip', exdir = './data')
 
+# load packages
 library(dplyr)
 library(lubridate)
 
+# load data to 'power' 
 power <- tbl_df(read.table(
     './data/household_power_consumption.txt',
     header = TRUE,
@@ -13,6 +16,7 @@ power <- tbl_df(read.table(
     na.strings = '?',
     nrows = 2075260L))
 
+# clean data
 power <- power %>%
     mutate(date = dmy(Date)) %>%
     mutate(time = hms(Time)) %>%
@@ -26,7 +30,6 @@ power$DateTime <- strptime(power$DateTime,"%d/%m/%Y %H:%M:%S")
 
 
 # Plot 3 ------------------------------
-
 plot(power$DateTime, power$Sub_metering_1,
      type='l',
      col='black',

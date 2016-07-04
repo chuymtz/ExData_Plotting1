@@ -1,11 +1,14 @@
+# download data
 fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
 if(!file.exists('data')) dir.create('data')
 download.file(fileUrl, destfile = './data/powerdata.zip')
 unzip('./data/powerdata.zip', exdir = './data')
 
+# load libraries
 library(dplyr)
 library(lubridate)
 
+# load data. give a few parameters to speed load
 power <- tbl_df(read.table(
     './data/household_power_consumption.txt',
     header = TRUE,
@@ -13,6 +16,7 @@ power <- tbl_df(read.table(
     na.strings = '?',
     nrows = 2075260L))
 
+# clean data with dplyer package
 power <- power %>%
     mutate(date = dmy(Date)) %>%
     mutate(time = hms(Time)) %>%
@@ -25,7 +29,6 @@ power <- power %>%
 power$DateTime <- strptime(power$DateTime,"%d/%m/%Y %H:%M:%S")
 
 # Plot 1 ------------------------------
-
 hist(power$Global_active_power, 
      main = 'Global Active Power',
      xlab = 'Global Active Power (kilowatts)',
